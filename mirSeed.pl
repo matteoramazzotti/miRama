@@ -41,7 +41,7 @@ $slice = $slice ? $slice : "6"; #the slicing size of mature mirna e.g. 6 (the se
 $outFolder = $outFolder ? $outFolder : "./";
 
 
-print STDERR "\nLoading gene targets: ";
+print STDERR "\nLoading gene targets: " if ($verbose);
 open(IN,"$targets") or die "No gene target found\n";
 my @targets;
 my %targets;
@@ -59,8 +59,8 @@ while (<IN>) {
 }
 close(IN);
 
-print STDERR "\n\t",scalar keys %targets, " sequences loaded\n";
-print STDERR "\nLoading miRNA seq:\n";
+print STDERR "\n\t",scalar keys %targets, " sequences loaded\n" if ($verbose);
+print STDERR "\nLoading miRNA seq:\n" if ($verbose);
 
 my $cnt = 0;
 my %mirseq; 
@@ -80,7 +80,7 @@ while(<IN>) {
 	}
 }
 close IN;
-print STDERR "\t",scalar keys %mirseq, " microRNAs loaded\n\n";
+print STDERR "\t",scalar keys %mirseq, " microRNAs loaded\n\n" if ($verbose);
 
 # load names of microRNA of interest if $ARGV[0] = file
 # else load only three letters organism name (e.g. bta, hsa etc.)
@@ -100,7 +100,7 @@ if (-f $mirsource) {
 		}
 	}
 	close IN;
-	print STDERR "miRNAs from file: $valid / $tot valid \n";
+	print STDERR "miRNAs from file: $valid / $tot valid \n" if ($verbose);
 } else {
 	#an organism name (eg hsa,bta,mmu etc.) to filter by org
 	foreach my $x (keys(%mirseq)) {
@@ -110,9 +110,9 @@ if (-f $mirsource) {
 			$valid++;
 		}
 	}
-	print STDERR "miRNAs from regex $ARGV[0]: $valid / $tot valid\n";
+	print STDERR "miRNAs from regex $ARGV[0]: $valid / $tot valid\n" if ($verbose);
 }
-print STDERR "\t",scalar @in_mir," microRNAs loaded\n\n";
+print STDERR "\t",scalar @in_mir," microRNAs loaded\n\n" if ($verbose);
 
 my $ind = 0;
 my %genes;
@@ -123,17 +123,17 @@ my %n_mir_targets; # for number of genes interacting with each mirna (for later 
 foreach my $mir (@in_mir) {
 	$ind++;
 	my $cnt = 0;
-	print STDERR "$ind: scanning $mir: ";
+	print STDERR "$ind: scanning $mir: " if ($verbose);
 	#if "seed" only the mirna seed is extracted
 	#the mir is sliced in chunks of size $slice to test seed-like perfect matches with target
 	if ($strand eq "seed") {
-		print STDERR "---------------MIR $mir\n";
-		my @coord = split(",",$slice);
-		print STDERR "$coord[0],$coord[1]\t",$mirseq{$mir},"\n";
+		print STDERR "---------------MIR $mir\n" if ($verbose);
+		my @coord = split(",",$range);
+		print STDERR "$coord[0],$coord[1]\t",$mirseq{$mir},"\n" if ($verbose);
 		my $start = $coord[0];
 		my $end = $coord[1];
 		my $sub = substr($mirseq{$mir}, $start - 1, $end - 1);
-		print STDERR $sub,"\n";
+		print STDERR $sub,"\n" if ($verbose);
 		my @res = analyze($sub);
 		next if (scalar(@res) == 0);
 		foreach my $i (0..$#res) {
@@ -151,7 +151,7 @@ foreach my $mir (@in_mir) {
 			}
 
 			my $sub = substr($mirseq{$mir}, $start, $slice);
-			print "sub $sub, size",length($sub),"\n";
+			print "sub $sub, size",length($sub),"\n" if ($verbose);
 
 			if (length($sub) >= $slice) {
 				my @res = analyze($sub);
@@ -193,7 +193,7 @@ sub summarize {
 	#stores the list of matched genes
 	$mir_targets{$mir} = join " ",@array_out;
 	$n_mir_targets{$mir} = scalar(@array_out);
-	print STDERR scalar(@array_out)," targets\n";
+	print STDERR scalar(@array_out)," targets\n" if ($verbose);
 
 	#stores the transposed version (different format)
 	foreach my $gene (@array_out) {
