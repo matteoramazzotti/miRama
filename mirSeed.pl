@@ -2,19 +2,29 @@
 use strict;
 use warnings;
 
-if (!$ARGV[0]) {
-	print STDERR "USAGE: mirSeed.pl\n\ttarget_genes.fasta\n\tmicroRNA_database.fasta\n\tmiRNA_source\n\tslice size\n\trange\n\n";
-	print STDERR "     example: perl mirSeed.pl human_3_UTR.fasta mirbase/mature.fa bta-miR 12 1:10\n\n";
-	print STDERR "	    example: perl mirSeed.pl human_3_UTR.fasta mirbase/mature.fa paper/DE_miRNA.names 8 1:10\n\n";
+use Getopt::Long;
+
+Getopt::Long::Configure ("bundling","no_ignore_case");
+
+GetOptions( 
+	'help|h' => \my $help,
+	'verbose|v+' => \my $verbose,
+	'targets|t=s' => \my $targets, # "human_3_UTR.fasta"
+	'mirnas|m=s' => \my $mirdb, # "mirbase/mature.fa"
+	'filter|f=s' => \my $mirsource,
+	'mode|M=s' => \my $strand,
+	'slice|s=i' => \my $slice,
+	'range|r=s' => \my $range,
+	'out-folder|o=s' => \my $outFolder
+);
 	exit;
 }
 
-my $targets = !$ARGV[0] ? "human_3_UTR.fasta" : $ARGV[0]; #human_3_UTR.fasta or human_5_UTR.fasta
-my $mirdb = !$ARGV[1] ? "mirbase/mature.fa" : $ARGV[1]; #mirbase/mature.fa
-my $mirsource = $ARGV[2]; #a file containing newline spearated list of microRNA names or a three-letter name organism (e.g. hsa, bta etc)
-my $strand = !$ARGV[3] ? "plus" : $ARGV[3]; #plus/minus/seed
-my $slice = !$ARGV[4] ? "8" : $ARGV[4]; #the slicing size of mature mirna or a range e.g. 2,8 (the seed)
-my $outFolder = !$ARGV[5] ? "." : $ARGV[5];
+$mirsource = $mirsource ? $mirsource : "hsa"; #a file containing newline spearated list of microRNA names or a three-letter name organism (e.g. hsa, bta etc)
+$strand = $strand ? $strand : "seed"; #plus/minus/seed
+$range = $range ? $range : "2,8"; #the range of mature mirna or a range e.g. 2,8 (the seed)
+$slice = $slice ? $slice : "6"; #the slicing size of mature mirna e.g. 6 (the seed)
+$outFolder = $outFolder ? $outFolder : "./";
 
 
 print STDERR "\nLoading gene targets: ";
