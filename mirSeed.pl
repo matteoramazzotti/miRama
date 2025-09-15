@@ -17,6 +17,20 @@ GetOptions(
 	'range|r=s' => \my $range,
 	'out-folder|o=s' => \my $outFolder
 );
+
+if ($help || !$targets || !$mirdb) {
+	print STDERR "USAGE: mirSeed.pl\n",
+	"\t-t, --targets\t\ttarget_genes.fasta\n",
+	"\t-m, --mirnas\t\tmicroRNA_database.fasta\n",
+	"\t-f, --filter\t\tmiRNA_source\n",
+	"\t-M, --mode\t\tmode selected: seed,plus or minus, Default: \'seed\'\n",
+	"\t-s, --slice\t\tslice size for plus and minus modes, Default: \'6\'\n",
+	"\t-r, --range\t\trange for seed mode, Default: \'2,8\'\n",
+	"\t-o, --out-folder\toutput directory, Default: \'./\'\n",
+	"\t-v, --verbose\t\tenable verbose mode, Default: \'False\'\n",
+	"\n";
+	print STDERR "     example: perl mirSeed.pl --targets human_3_UTR.fasta --mirnas mature.fa --filter bta-miR --mode seed --range 2,7 \n\n";
+	print STDERR "     example: perl mirSeed.pl --targets human_3_UTR.fasta --mirnas mature.fa --filter DE_miRNA.names --mode plus --slice 8\n\n";	
 	exit;
 }
 
