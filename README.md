@@ -1,6 +1,28 @@
 # miRama
 Scripts for microRNA analysis from NGS (work in progress)
 
+## miRscreen.pl
+
+Map reads against different small rna datasets and provide evidence that a read is actually that a of a miRNA by excluding from results all reads that don't map to mirna only.
+Outputs a tab separated file relating each Unique Molecular Identifier (UMI) to the target miRNA and the relative matches to each library type. 
+
+### Usage
+
+```
+-b, --main-bam          bam file containing reads to check
+-B, --library-bam       bam files to match the reads against separated by ':' with a type flag to record matches
+-v, --verbose           enable verbose mode, Default: 'False'
+-h, --help              display help
+```
+
+Example:
+
+```
+perl mirScreen.pl -v -b bam1 -B bam2:trna -B bam3:mature
+```
+```
+perl mirScreen.pl -v -b bam1 -B bam2:trna,bam3:mature
+```
 
 ## miRseed.pl
 
