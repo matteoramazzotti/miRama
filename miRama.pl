@@ -346,7 +346,7 @@ sub reads_post_processor {
 
 
 	foreach my $n (0..$#bufname) {
-		if ($bufseq[$n] =~ /(.+?)$common(.{$umilen})/;) {
+		if ($bufseq[$n] =~ /(.+?)$common(.{$umilen})/) {
 			$toprint = '';
 			if (length($1)>=$min && length($1)<=$max) {
 				$validread = $1;
